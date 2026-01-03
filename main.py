@@ -117,8 +117,9 @@ class ErrorResponse(BaseModel):
 openai_client = AsyncOpenAI(api_key=settings.openai_api_key)
 chat_client = AsyncOpenAI(api_key=settings.openai_api_key)
 
-# Qdrant client
-qdrant_client = AsyncQdrantClient(
+# Qdrant client (use sync client for compatibility)
+from qdrant_client import QdrantClient
+qdrant_client = QdrantClient(
     url=settings.qdrant_url,
     api_key=settings.qdrant_api_key,
 )
@@ -138,9 +139,9 @@ async def generate_embedding(text: str) -> list[float]:
     return response.data[0].embedding
 
 
-async def search_qdrant(query_embedding: list[float], limit: int = 5):
+def search_qdrant(query_embedding: list[float], limit: int = 5):
     """Search for similar chunks in Qdrant."""
-    results = await qdrant_client.search(
+    results = qdrant_client.search(
         collection_name=settings.qdrant_collection,
         query_vector=query_embedding,
         limit=limit,
@@ -155,8 +156,8 @@ async def answer_question(question: str, top_k: int = 5) -> dict:
         # Step 1: Generate embedding for question
         question_embedding = await generate_embedding(question)
 
-        # Step 2: Search Qdrant for relevant chunks
-        search_results = await search_qdrant(question_embedding, limit=top_k)
+        # Step 2: Search Qdrant for relevant chunks (sync call in async function)
+        search_results = search_qdrant(question_embedding, limit=top_k)
 
         if not search_results:
             return {
