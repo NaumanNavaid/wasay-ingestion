@@ -316,9 +316,13 @@ async def root():
 @app.get("/health", tags=["Health"])
 async def health_check():
     """Health check endpoint."""
+    import qdrant_client
     return {
         "status": "healthy",
         "timestamp": datetime.utcnow().isoformat(),
+        "qdrant_version": qdrant_client.__version__ if hasattr(qdrant_client, '__version__') else "unknown",
+        "qdrant_client_type": type(qdrant_client).__name__,
+        "qdrant_methods": [m for m in dir(qdrant_client) if not m.startswith('_')],
     }
 
 
