@@ -426,10 +426,11 @@ if __name__ == "__main__":
     print("  Selection:      POST /chatbot/ask-selection")
     print("=" * 60)
 
+    port = int(os.getenv("PORT", settings.api_port))
     uvicorn.run(
-        "app:app",
+        app,
         host=settings.api_host,
-        port=settings.api_port,
-        reload=True,
+        port=port,
+        reload=False,
         log_level="info",
     )
