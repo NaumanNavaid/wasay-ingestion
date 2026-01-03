@@ -140,13 +140,13 @@ async def generate_embedding(text: str) -> list[float]:
 
 async def search_qdrant(query_embedding: list[float], limit: int = 5):
     """Search for similar chunks in Qdrant."""
-    results = await qdrant_client.query_points(
+    results = await qdrant_client.search(
         collection_name=settings.qdrant_collection,
         query_vector=query_embedding,
         limit=limit,
         score_threshold=0.5,
     )
-    return results.points
+    return results
 
 
 async def answer_question(question: str, top_k: int = 5) -> dict:
