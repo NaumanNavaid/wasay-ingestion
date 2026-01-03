@@ -117,7 +117,7 @@ class ErrorResponse(BaseModel):
 openai_client = AsyncOpenAI(api_key=settings.openai_api_key)
 chat_client = AsyncOpenAI(api_key=settings.openai_api_key)
 
-# Qdrant client (use sync client for compatibility)
+# Qdrant client
 from qdrant_client import QdrantClient
 qdrant_client = QdrantClient(
     url=settings.qdrant_url,
